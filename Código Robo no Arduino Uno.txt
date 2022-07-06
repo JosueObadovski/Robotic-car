@@ -1,0 +1,56 @@
+#include <NewPing.h>
+
+NewPing sensor(6, 13, 80);
+
+void setup() {
+  pinMode(2, OUTPUT);   //Rodar pra tras direita
+  pinMode(3, OUTPUT);   //Rodar pra frente direita
+  pinMode(4, OUTPUT);   //Rodar pra tras esquerda 
+  pinMode(5, OUTPUT);   //Rodar pra frente esquerda  
+  
+  pinMode(9, INPUT_PULLUP);    //Sensor de linha esquerda
+  pinMode(10,INPUT_PULLUP);    //Sensor de linha direita
+  pinMode(11,INPUT_PULLUP);    //Sensor de linha ré
+  
+  pinMode(6, OUTPUT);  //Trigger
+  pinMode(13, INPUT);   //Echo
+
+  delay(3000);
+  Serial.begin(9600);
+}
+
+void loop() {
+  int d = sensor.ping_cm();
+  bool se = digitalRead(9), sd = digitalRead(10), sr = digitalRead(11);
+  
+  if(se || sd)
+  {
+    digitalWrite(2, HIGH);
+    digitalWrite(3, LOW);
+    digitalWrite(4, HIGH);
+    digitalWrite(5, LOW);
+  }
+  else if(sr)
+  {
+    digitalWrite(2, LOW);
+    digitalWrite(3, HIGH);
+    digitalWrite(4, LOW);
+    digitalWrite(5, HIGH);
+  }
+  else if(d != 0 && d < 80)
+  {
+    digitalWrite(2, LOW);
+    digitalWrite(3, HIGH);
+    digitalWrite(4, LOW);
+    digitalWrite(5, HIGH);
+  }
+  else
+  {
+    digitalWrite(2, HIGH);
+    digitalWrite(3, LOW);
+    digitalWrite(4, LOW);
+    digitalWrite(5, HIGH);
+  }
+
+  Serial.println(sr);
+  }
